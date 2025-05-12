@@ -1,0 +1,34 @@
+/* Özel stil dosyası */
+:root {
+    --primary-color: #007bff; /* Ana renk, özelleştirilebilir */
+    --secondary-color: #6c757d; /* İkincil renk */
+}
+
+/* Genel özelleştirmeler */
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.navbar-brand img {
+    max-height: 40px; /* Logo boyutu */
+}
+
+/* AdminLTE ve Font Awesome özelleştirmeleri */
+.main-sidebar {
+    background-color: var(--primary-color);
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.fa-icon {
+    margin-right: 5px; /* Font Awesome ikonları için boşluk */
+}
+
+/* Responsive ayarlar */
+@media (max-width: 768px) {
+    .navbar-brand img {
+        max-height: 30px;
+    }
+}
