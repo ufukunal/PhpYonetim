@@ -39,6 +39,14 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="iskonto1">İskonto 1 (%)</label>
+                        <input type="number" step="0.01" class="form-control" id="iskonto1" name="iskonto1" value="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="iskonto2">İskonto 2 (%)</label>
+                        <input type="number" step="0.01" class="form-control" id="iskonto2" name="iskonto2" value="0.00">
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <h5>Adresler</h5>

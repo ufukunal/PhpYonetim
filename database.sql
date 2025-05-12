@@ -170,7 +170,7 @@ CREATE TABLE customer_groups (
 );
 
 -- Müşteri hesapları tablosu (Customer Modülü)
--- Müşteri bilgilerini saklar
+-- Müşteri bilgilerini saklar, iskonto1 ve iskonto2 alanları eklendi
 CREATE TABLE customer_accounts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -179,6 +179,8 @@ CREATE TABLE customer_accounts (
     tax_number VARCHAR(20),
     tax_office VARCHAR(100),
     group_id INT,
+    iskonto1 DECIMAL(5,2) DEFAULT 0.00,  -- Birinci indirim oranı (%)
+    iskonto2 DECIMAL(5,2) DEFAULT 0.00,  -- İkinci indirim oranı (%)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_by INT,
     updated_at TIMESTAMP NULL,

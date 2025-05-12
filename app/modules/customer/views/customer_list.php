@@ -64,7 +64,7 @@
                             <a href="<?php echo url('customer/detail/' . $customer['id']); ?>" class="btn btn-sm btn-info">
                                 <i class="fas fa-eye"></i> Detay
                             </a>
-                            <button class="btn btn-sm btn-danger" onclick="deleteCustomer(<?php echo $customer['id']; ?>)">
+                            <button class="btn btn-sm btn-danger" onclick="deleteCustomer(<?php echo $customer['id']); ?>)">
                                 <i class="fas fa-trash"></i> Sil
                             </button>
                         </td>
@@ -86,4 +86,7 @@ function deleteCustomer(id) {
         });
     }
 }
+$(document).ready(function() {
+    $('.select2').select2();
+});
 </script>

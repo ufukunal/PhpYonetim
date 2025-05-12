@@ -11,6 +11,8 @@
                 <p><strong>Vergi Numarası:</strong> <?php echo sanitize($customer['tax_number'] ?? '-'); ?></p>
                 <p><strong>Vergi Dairesi:</strong> <?php echo sanitize($customer['tax_office'] ?? '-'); ?></p>
                 <p><strong>Grup:</strong> <?php echo sanitize($customer['group_name'] ?? '-'); ?></p>
+                <p><strong>İskonto 1 (%):</strong> <?php echo number_format($customer['iskonto1'], 2); ?></p>
+                <p><strong>İskonto 2 (%):</strong> <?php echo number_format($customer['iskonto2'], 2); ?></p>
                 <p><strong>Bakiye:</strong> <?php echo number_format($balance, 2); ?> TL</p>
             </div>
             <div class="col-md-6">
