@@ -32,3 +32,25 @@ body {
         max-height: 30px;
     }
 }
+
+/* Yazdırma stilleri */
+@media print {
+    .card-tools, .btn, form {
+        display: none !important; /* Butonlar ve formlar yazdırmada gizlenir */
+    }
+    .card {
+        border: none;
+        box-shadow: none;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table th, .table td {
+        border: 1px solid #000;
+        padding: 5px;
+    }
+    .card-body {
+        padding: 0;
+    }
+}
