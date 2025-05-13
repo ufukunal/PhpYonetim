@@ -1,24 +1,7 @@
-RewriteEngine On
-RewriteBase /public/
-
-# Tüm istekleri index.php’ye yönlendir
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
-
-# Güvenlik ayarları
-<FilesMatch "\.(log|ini|env)$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-
-# /uploads dizinine doğrudan erişimi engelle
-<Directory "/public/uploads">
-    Order Allow,Deny
-    Deny from all
-</Directory>
-
-# XSS ve diğer güvenlik başlıkları
-Header set X-Content-Type-Options "nosniff"
-Header set X-Frame-Options "DENY"
-Header set X-XSS-Protection "1; mode=block"
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>

@@ -1,0 +1,10 @@
+.card {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.alert {
+    margin-bottom: 1rem;
+}
