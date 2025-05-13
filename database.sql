@@ -1,10 +1,9 @@
 -- Kurumiçi Yazılım Veritabanı Şeması
--- Bu dosya, Kullanıcı, Yetkilendirme, Stok, Customer, Fatura ve Sipariş modülleri için tüm tabloları içerir
--- Oluşturma Tarihi: 2025-05-12
+-- Bu dosya, Kullanıcı, Yetkilendirme, Stok, Customer, Fatura, Sipariş, Kasa, Banka ve Çek Senet modülleri için tüm tabloları içerir
+-- Oluşturma Tarihi: 2025-05-13
 -- Kodlama: UTF-8
 
 -- Kullanıcılar tablosu (Kullanıcı Modülü)
--- Kullanıcı bilgilerini saklar
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -15,7 +14,6 @@ CREATE TABLE users (
 );
 
 -- Roller tablosu (Yetkilendirme Modülü)
--- Kullanıcı rollerini saklar (örn: admin, kullanıcı)
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -24,7 +22,6 @@ CREATE TABLE roles (
 );
 
 -- İzinler tablosu (Yetkilendirme Modülü)
--- Sistemdeki izinleri saklar (örn: user.view, stock.edit)
 CREATE TABLE permissions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -33,7 +30,6 @@ CREATE TABLE permissions (
 );
 
 -- Rol-izin eşleşmeleri tablosu (Yetkilendirme Modülü)
--- Hangi rollerin hangi izinlere sahip olduğunu belirtir
 CREATE TABLE role_permissions (
     role_id INT,
     permission_id INT,
@@ -43,7 +39,6 @@ CREATE TABLE role_permissions (
 );
 
 -- Kullanıcı-rol eşleşmeleri tablosu (Yetkilendirme Modülü)
--- Hangi kullanıcıların hangi rollere sahip olduğunu belirtir
 CREATE TABLE user_roles (
     user_id INT,
     role_id INT,
@@ -53,7 +48,6 @@ CREATE TABLE user_roles (
 );
 
 -- Stok grupları tablosu (Stok Modülü)
--- Ürünlerin en üst düzey sınıflandırmasını saklar (örn: Elektronik, Tekstil)
 CREATE TABLE stock_groups (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -63,7 +57,6 @@ CREATE TABLE stock_groups (
 );
 
 -- Ara gruplar tablosu (Stok Modülü)
--- Stok gruplarının alt sınıflandırmasını saklar (örn: Telefon, Giyim)
 CREATE TABLE stock_sub_groups (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -75,7 +68,6 @@ CREATE TABLE stock_sub_groups (
 );
 
 -- Alt gruplar tablosu (Stok Modülü)
--- Ara grupların alt sınıflandırmasını saklar (örn: Akıllı Telefon, Tişört)
 CREATE TABLE stock_sub_sub_groups (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -87,7 +79,6 @@ CREATE TABLE stock_sub_sub_groups (
 );
 
 -- Ürünler tablosu (Stok Modülü)
--- Ürün bilgilerini ve grup ilişkilerini saklar
 CREATE TABLE stock_products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -111,7 +102,6 @@ CREATE TABLE stock_products (
 );
 
 -- Ürün özellikleri tablosu (Stok Modülü)
--- Ürünlerin renk, boyut, ağırlık gibi özelliklerini saklar
 CREATE TABLE stock_product_attributes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
@@ -122,7 +112,6 @@ CREATE TABLE stock_product_attributes (
 );
 
 -- Ürün resimleri tablosu (Stok Modülü)
--- Ürünlerin birden fazla resmini saklar
 CREATE TABLE stock_product_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
@@ -132,7 +121,6 @@ CREATE TABLE stock_product_images (
 );
 
 -- Stok giriş işlemleri tablosu (Stok Modülü)
--- Ürün stok girişlerini saklar
 CREATE TABLE stock_entries (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
@@ -146,7 +134,6 @@ CREATE TABLE stock_entries (
 );
 
 -- Stok çıkış işlemleri tablosu (Stok Modülü)
--- Ürün stok çıkışlarını saklar
 CREATE TABLE stock_exits (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
@@ -160,7 +147,6 @@ CREATE TABLE stock_exits (
 );
 
 -- Müşteri grupları tablosu (Customer Modülü)
--- Müşteri hesaplarını sınıflandırmak için kullanılır (örn: Bölgesel Müşteriler)
 CREATE TABLE customer_groups (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -170,7 +156,6 @@ CREATE TABLE customer_groups (
 );
 
 -- Müşteri hesapları tablosu (Customer Modülü)
--- Müşteri bilgilerini saklar, iskonto1 ve iskonto2 alanları içerir
 CREATE TABLE customer_accounts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -179,8 +164,8 @@ CREATE TABLE customer_accounts (
     tax_number VARCHAR(20),
     tax_office VARCHAR(100),
     group_id INT,
-    iskonto1 DECIMAL(5,2) DEFAULT 0.00,  -- Birinci indirim oranı (%)
-    iskonto2 DECIMAL(5,2) DEFAULT 0.00,  -- İkinci indirim oranı (%)
+    iskonto1 DECIMAL(5,2) DEFAULT 0.00,
+    iskonto2 DECIMAL(5,2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_by INT,
     updated_at TIMESTAMP NULL,
@@ -191,7 +176,6 @@ CREATE TABLE customer_accounts (
 );
 
 -- Müşteri adresleri tablosu (Customer Modülü)
--- Müşterilere ait dinamik adresleri saklar (fatura, sevk, diğer)
 CREATE TABLE customer_addresses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
@@ -206,7 +190,6 @@ CREATE TABLE customer_addresses (
 );
 
 -- Müşteri yetkili iletişim bilgileri tablosu (Customer Modülü)
--- Müşterilere ait dinamik yetkili kişi bilgilerini saklar
 CREATE TABLE customer_contacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
@@ -220,7 +203,6 @@ CREATE TABLE customer_contacts (
 );
 
 -- Müşteri işlemleri tablosu (Customer Modülü)
--- Finansal işlemleri (alış, satış, ödeme, tahsilat) saklar
 CREATE TABLE customer_transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
@@ -245,7 +227,6 @@ CREATE TABLE customer_transactions (
 );
 
 -- Faturalar tablosu (Fatura Modülü)
--- Fatura bilgilerini saklar
 CREATE TABLE invoices (
     id INT AUTO_INCREMENT PRIMARY KEY,
     invoice_no VARCHAR(50) NOT NULL UNIQUE,
@@ -274,7 +255,6 @@ CREATE TABLE invoices (
 );
 
 -- Fatura kalemleri tablosu (Fatura Modülü)
--- Fatura kalemlerini saklar
 CREATE TABLE invoice_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     invoice_id INT NOT NULL,
@@ -290,7 +270,6 @@ CREATE TABLE invoice_items (
 );
 
 -- Siparişler tablosu (Sipariş Modülü)
--- Sipariş bilgilerini saklar
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_no VARCHAR(50) NOT NULL UNIQUE,
@@ -310,7 +289,6 @@ CREATE TABLE orders (
 );
 
 -- Sipariş kalemleri tablosu (Sipariş Modülü)
--- Sipariş kalemlerini saklar
 CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
@@ -326,4 +304,137 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES stock_products(id) ON DELETE RESTRICT,
     FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE SET NULL
+);
+
+-- Kasalar tablosu (Kasa Modülü)
+CREATE TABLE cash_registers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'TL',
+    branch_id INT,
+    balance DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    status ENUM('active', 'passive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP NULL,
+    updated_by INT,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Kasa işlemleri tablosu (Kasa Modülü)
+CREATE TABLE cash_transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cash_register_id INT NOT NULL,
+    type ENUM('in', 'out', 'virman', 'tahsilat', 'odeme') NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'TL',
+    transaction_date DATETIME NOT NULL,
+    customer_id INT,
+    invoice_id INT,
+    order_id INT,
+    description TEXT,
+    status ENUM('pending', 'controlled', 'rejected') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (cash_register_id) REFERENCES cash_registers(id) ON DELETE RESTRICT,
+    FOREIGN KEY (customer_id) REFERENCES customer_accounts(id) ON DELETE SET NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE SET NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Banka hesapları tablosu (Banka Modülü)
+CREATE TABLE bank_accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    bank_name VARCHAR(100) NOT NULL,
+    branch_code VARCHAR(20),
+    branch_name VARCHAR(100),
+    account_number VARCHAR(50),
+    iban VARCHAR(34) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'TL',
+    branch_id INT,
+    balance DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    status ENUM('active', 'passive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP NULL,
+    updated_by INT,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Banka işlemleri tablosu (Banka Modülü)
+CREATE TABLE bank_transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bank_account_id INT NOT NULL,
+    type ENUM('in', 'out', 'havale', 'eft', 'virman', 'tahsilat', 'odeme') NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'TL',
+    transaction_date DATETIME NOT NULL,
+    customer_id INT,
+    invoice_id INT,
+    order_id INT,
+    description TEXT,
+    status ENUM('pending', 'controlled', 'rejected') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (bank_account_id) REFERENCES bank_accounts(id) ON DELETE RESTRICT,
+    FOREIGN KEY (customer_id) REFERENCES customer_accounts(id) ON DELETE SET NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE SET NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Çek/Senet tablosu (Çek Senet Modülü)
+CREATE TABLE checks_notes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('check', 'note') NOT NULL,
+    document_number VARCHAR(50) NOT NULL UNIQUE,
+    customer_id INT NOT NULL,
+    issue_date DATETIME NOT NULL,
+    due_date DATETIME NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'TL',
+    bank_id INT,
+    check_number VARCHAR(50),
+    serial_number VARCHAR(50),
+    invoice_id INT,
+    order_id INT,
+    description TEXT,
+    status ENUM('pending', 'due', 'collected', 'paid', 'returned', 'protested') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP NULL,
+    updated_by INT,
+    FOREIGN KEY (customer_id) REFERENCES customer_accounts(id) ON DELETE RESTRICT,
+    FOREIGN KEY (bank_id) REFERENCES bank_accounts(id) ON DELETE SET NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE SET NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Çek/Senet işlemleri tablosu (Çek Senet Modülü)
+CREATE TABLE check_note_transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    check_note_id INT NOT NULL,
+    type ENUM('collection', 'payment') NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'TL',
+    transaction_date DATETIME NOT NULL,
+    method ENUM('cash', 'bank', 'cash_register') NOT NULL,
+    bank_account_id INT,
+    cash_register_id INT,
+    description TEXT,
+    status ENUM('pending', 'controlled', 'rejected') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (check_note_id) REFERENCES checks_notes(id) ON DELETE CASCADE,
+    FOREIGN KEY (bank_account_id) REFERENCES bank_accounts(id) ON DELETE SET NULL,
+    FOREIGN KEY (cash_register_id) REFERENCES cash_registers(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
