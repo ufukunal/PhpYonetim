@@ -1,5 +1,5 @@
 -- Kurumiçi Yazılım Veritabanı Şeması
--- Bu dosya, Kullanıcı, Yetkilendirme, Stok, Customer, Fatura, Sipariş, Kasa, Banka ve Çek Senet modülleri için tüm tabloları içerir
+-- Bu dosya, Kullanıcı, Yetkilendirme, Stok, Customer, Fatura, Sipariş, Kasa, Banka, Çek Senet, Üretim ve RestAPI modülleri için tüm tabloları içerir
 -- Oluşturma Tarihi: 2025-05-13
 -- Kodlama: UTF-8
 
@@ -437,4 +437,71 @@ CREATE TABLE check_note_transactions (
     FOREIGN KEY (bank_account_id) REFERENCES bank_accounts(id) ON DELETE SET NULL,
     FOREIGN KEY (cash_register_id) REFERENCES cash_registers(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Reçeteler tablosu (Üretim Modülü)
+CREATE TABLE recipes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    product_id INT NOT NULL,
+    description TEXT,
+    status ENUM('active', 'passive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP NULL,
+    updated_by INT,
+    FOREIGN KEY (product_id) REFERENCES stock_products(id) ON DELETE RESTRICT,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Reçete bileşenleri tablosu (Üretim Modülü)
+CREATE TABLE recipe_ingredients (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT NOT NULL,
+    ingredient_id INT NOT NULL,
+    quantity DECIMAL(10,2) NOT NULL,
+    unit VARCHAR(20) NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    FOREIGN KEY (ingredient_id) REFERENCES stock_products(id) ON DELETE RESTRICT
+);
+
+-- Üretim emirleri tablosu (Üretim Modülü)
+CREATE TABLE production_orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(50) NOT NULL UNIQUE,
+    recipe_id INT NOT NULL,
+    quantity DECIMAL(10,2) NOT NULL,
+    planned_date DATETIME,
+    tracking ENUM('yes', 'no') NOT NULL DEFAULT 'no',
+    status ENUM('pending', 'in_progress', 'completed', 'canceled') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP NULL,
+    updated_by INT,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE RESTRICT,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Üretim takip tablosu (Üretim Modülü)
+CREATE TABLE production_tracking (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    step VARCHAR(100) NOT NULL,
+    status ENUM('pending', 'in_progress', 'completed') NOT NULL DEFAULT 'pending',
+    completed_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (order_id) REFERENCES production_orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- API anahtarları tablosu (RestAPI Modülü)
+CREATE TABLE api_keys (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    key VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
